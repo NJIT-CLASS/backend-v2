@@ -11,6 +11,4 @@ export default async (app) => {
     router.post('/user', userController.createUser);
     //create a fake user with login and contact
     router.post('/user/fake', userController.createFakeUser);
-    //authenticate user
-    router.post('/user/authenticate', userController.authenticate);
 };

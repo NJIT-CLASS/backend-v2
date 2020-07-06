@@ -57,7 +57,7 @@ Object.keys(db).forEach((modelName) => {
 //     .query('SET FOREIGN_KEY_CHECKS = 0')
 //     .then(function () {
 //         return sequelize.sync({
-//             force: config.forceSync,
+//             force: true,
 //             // logging: console.log
 //         });
 //     })

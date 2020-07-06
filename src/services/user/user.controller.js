@@ -1,23 +1,15 @@
 import userService from './user.service';
+import responseService from '../_helper/response.service';
 import faker from 'faker';
 import { sequelize } from '../../models';
 import Logger from '../../loaders/logger';
+import { response } from 'express';
 
 module.exports = {
-    authenticate,
     createUser,
     createFakeUser,
     findAll,
 };
-
-async function authenticate(req, res, next) {
-    try {
-        const user = await userService.authenticate(req.body);
-        res.json(user);
-    } catch (e) {
-        Logger.error(e);
-    }
-}
 
 async function createUser(req, res, next) {
     try {
@@ -28,9 +20,10 @@ async function createUser(req, res, next) {
         await userService.createLogin(data, t);
         await userService.createContact(data, t);
         await t.commit();
-        res.json(user);
+        res.status(201).send(user);
     } catch (e) {
         Logger.error(e);
+        res.status(400).send(await responseService.errorMessage('UserController::createUser::' + e));
     }
 }
 
@@ -53,17 +46,19 @@ async function createFakeUser(req, res, next) {
         await userService.createLogin(data, t);
         await userService.createContact(data, t);
         await t.commit();
-        res.json(user);
+        res.status(201).send(user);
     } catch (e) {
         Logger.error(e);
+        res.status(400).send(await responseService.errorMessage('UserController::createFakeUser::' + e));
     }
 }
 
 async function findAll(req, res, next) {
     try {
         const users = await userService.findAll();
-        res.json(users);
+        res.status(200).send(responseService.successMessage(users));
     } catch (e) {
         Logger.error(e);
+        res.status(400).send(await responseService.errorMessage('UserController::findAll::' + e));
     }
 }

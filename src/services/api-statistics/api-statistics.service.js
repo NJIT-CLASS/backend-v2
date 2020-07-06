@@ -8,7 +8,7 @@ module.exports = {
 
 // create api stat entry
 async function apiStatistics(req, res, next) {
-    var path = url.parse(req.url).pathname.replace(/[0-9]*/g, '');
+    var path = req.protocol + '://' + req.get('host') + req.originalUrl;
 
     let insertAPIResult = await sequelize.query(' INSERT INTO apistatistics (StartTime, Route) VALUES(NOW(6), :route) ', {
         replacements: {

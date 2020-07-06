@@ -24,6 +24,8 @@ module.exports = {
     logs: {
         level: process.env.LOG_LEVEL || 'silly',
     },
+    tokenLife: process.env.TOKEN_LIFE || '6h',
+    refreshTokenLife: process.env.REFRESH_TOKEN_LIFE || 14,
     maxFileSize: 16 * 1024 * 1024, //16 MB
     imagePath: './public/images',
     secret: process.env.SECRET,

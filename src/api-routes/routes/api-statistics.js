@@ -5,6 +5,6 @@ var router = express.Router();
 
 export default async (app) => {
     app.use('/', router);
-    router.use(apiStatisticsService.apiStatistics);
-    router.use(apiStatisticsService.updateAPIStatistics);
+    // router.use(apiStatisticsService.apiStatistics);
+    // router.use(apiStatisticsService.updateAPIStatistics);
 };
