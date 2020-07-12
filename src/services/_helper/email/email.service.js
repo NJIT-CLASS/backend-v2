@@ -24,12 +24,13 @@ const email = new Email({
     transport: transporter,
 });
 
-exports.send = async (template, data = null) => {
+exports.send = async (template, data = {}) => {
     try {
+        data.port = config.frontendPort;
         email.send({
             template: template,
             message: {
-                to: data.UserID,
+                to: 'luqian0618@hotmail.com',
             },
             locals: data,
         });

@@ -10,9 +10,12 @@ module.exports = {
     createLogin,
     createUser,
     findAll,
-    findUser,
-    findUserContact,
-    findUserLogin,
+    findOneUser,
+    findAllUsers,
+    findOneUserContact,
+    findAllUserContacts,
+    findOneUserLogin,
+    findAllUserLogins,
     updateContact,
     updatePassword,
     updateLogin,
@@ -46,12 +49,21 @@ async function createContact(contactObject, t) {
     return contact;
 }
 
-async function findUser(attributes) {
+async function findOneUser(attributes) {
     const user = await User.findOne({
         where: attributes,
     });
 
-    Logger.info('UserService::findUser::UserID:' + user.UserID);
+    Logger.info('UserService::findOneUser::UserID:' + user.UserID);
+    return user;
+}
+
+async function findAllUsers() {
+    const user = await User.findAll({
+        where: attributes,
+    });
+
+    Logger.info('UserService::findAllUsers::Count:' + user.length);
     return user;
 }
 
@@ -61,19 +73,35 @@ async function findAll() {
     return users;
 }
 
-async function findUserContact(attributes) {
+async function findOneUserContact(attributes) {
     const contact = await UserContact.findOne({
         where: attributes,
     });
-    Logger.info('UserService::findContact::UserID:' + contact.UserID);
+    Logger.info('UserService::findOneContact::UserID:' + contact.UserID);
     return contact;
 }
 
-async function findUserLogin(attributes) {
+async function findAllUserContacts(attributes) {
+    const contact = await UserContact.findAll({
+        where: attributes,
+    });
+    Logger.info('UserService::findAllContacts::Count:' + contact.length);
+    return contact;
+}
+
+async function findOneUserLogin(attributes) {
     const userLogin = await UserLogin.findOne({
         where: attributes,
     });
-    Logger.info('UserService::findUserLogin::UserID:' + userLogin.UserID);
+    Logger.info('UserService::findOneUserLogin::UserID:' + userLogin.UserID);
+    return userLogin;
+}
+
+async function findAllUserLogins(attributes) {
+    const userLogin = await UserLogin.findAll({
+        where: attributes,
+    });
+    Logger.info('UserService::findAllUserLogins::Count:' + userLogin.length);
     return userLogin;
 }
 
@@ -95,7 +123,6 @@ async function updateUser(userObject, t) {
 }
 
 async function updatePassword(loginObject, t) {
-    console.log(loginObject.Password);
     const saltRounds = 11;
     const password = await bcrypt.hash(loginObject.Password, saltRounds);
     const login = await UserLogin.update(
@@ -136,7 +163,7 @@ async function updateLogin(loginObject, t) {
 }
 
 async function updateContact(contactObject, t) {
-    const { UserID, ...contactObjectWithoutID } = userObject;
+    const { UserID, ...contactObjectWithoutID } = contactObject;
     const contact = await UserContact.update(
         contactObjectWithoutID,
         {

@@ -7,6 +7,8 @@ export default async (app) => {
     app.use('/', router);
     //authenticate user to login
     router.post('/login', authController.authenticate);
-    //reset password
+    //reset user password
     router.post('/password/reset', authController.resetPassword);
+    //refresh jwt refresh token
+    router.post('/refreshToken', authController.refreshToken);
 };

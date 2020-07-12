@@ -4,10 +4,10 @@ import responseService from '../_helper/response.service';
 import { sequelize } from '../../models';
 import Logger from '../../loaders/logger';
 import { response } from 'express';
-import * as generator from 'generate-password';
 
 module.exports = {
     authenticate,
+    refreshToken,
     resetPassword,
 };
 
@@ -15,7 +15,7 @@ async function authenticate(req, res, next) {
     try {
         if (req.body.emailaddress == null || req.body.password == null) {
             Logger.info(e);
-            res.status(400).send(await errorService.errorMessage('Email or password is null'));
+            res.status(400).send(await responseService.errorMessage('Email or password is null'));
         }
 
         const data = await authService.authenticate(req.body);
@@ -36,11 +36,13 @@ async function authenticate(req, res, next) {
                 let timeOut = new Date(userLogin.Timeout) - new Date();
                 timeOut = Math.ceil(timeOut / 1000 / 60);
                 Logger.info('AuthController::authenticate::User timeout for ' + timeOut + 'minutes. UserID:' + userLogin.UserID);
-                return res.status(400).send({
-                    Error: true,
-                    Message: 'Timeout',
-                    Timeout: timeOut,
-                });
+                return res.status(400).send(
+                    await responseService.errorMessage({
+                        Error: true,
+                        Message: 'Timeout',
+                        Timeout: timeOut,
+                    })
+                );
             } else if (!checkPassword) {
                 let attempts = userLogin.Attempts + 1;
                 let minutes = 0;
@@ -92,7 +94,7 @@ async function authenticate(req, res, next) {
                     Timeout: minutes,
                 });
             }
-            return res.json(
+            return res.status(200).json(
                 await responseService.successMessage({
                     UserID: userLogin.UserID,
                     Pending: userLogin.Pending,
@@ -101,42 +103,52 @@ async function authenticate(req, res, next) {
                 })
             );
         } else {
-            res.json(await responseService.errorMessage('AuthController::authenticate::User not found'));
+            return res.status(400).json(await responseService.errorMessage('AuthController::authenticate::User not found'));
         }
     } catch (e) {
-        Logger.error(e);
-        res.json(await responseService.errorMessage('AuthController::authenticate::' + e));
+        Logger.error('AuthController::authenticate::' + e);
+        return res.status(500).send(await responseService.errorMessage('AuthController::authenticate::' + e));
+    }
+}
+
+async function refreshToken(req, res, next) {
+    try {
+        const token = await authService.refreshToken(req);
+
+        if (token == null) {
+            return res.status(400).send(await responseService.errorMessage('AuthController::refreshToken::Refresh token expired. UserID: ' + req.body.UserID));
+        }
+        return res.status(200).send(
+            await responseService.successMessage({
+                Token: token,
+            })
+        );
+    } catch (e) {
+        Logger.error('AuthController::refreshToken::' + e);
+        return res.status(400).send(await responseService.errorMessage('AuthController::refreshToken::' + e));
     }
 }
 
 async function resetPassword(req, res, next) {
     try {
         if (req.body.email === null || req.body.email === '') {
-            return res.status(400).send(await errorService.errorMessage('Email or password is null'));
+            return res.status(400).send(await errorService.errorMessage('AuthController::resetPassword::Email or password is null'));
         }
 
-        let userLogin = await userService.findUserLogin({
+        let userLogin = await userService.findOneUserLogin({
             Email: req.body.email,
         });
 
         if (userLogin == null) {
-            return res.status(400).send(await errorService.errorMessage('Cannot find user with email: ' + req.body.email));
+            return res.status(400).send(await errorService.errorMessage('AuthController::resetPassword::Cannot find user with email: ' + req.body.email));
         }
-        var temp_pass = await generator.generate({
-            length: 10,
-            numbers: true,
-            uppercase: true,
-            lowercase: true,
-        });
-
-        console.log(temp_pass);
+        var temp_pass = authService.generatePassword();
         userLogin.Password = temp_pass;
-        console.log(userLogin.Password);
         userLogin = await userService.updatePassword(userLogin);
 
-        res.status(201).send(await responseService.successMessage(userLogin));
+        return res.status(201).send(await responseService.successMessage(userLogin));
     } catch (e) {
-        Logger.error(e);
-        res.json(await responseService.errorMessage('AuthController::resetPassword::' + e));
+        Logger.error('AuthController::resetPassword::' + e);
+        return res.status(500).send(await responseService.errorMessage('AuthController::resetPassword::' + e));
     }
 }

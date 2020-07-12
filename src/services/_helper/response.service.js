@@ -13,9 +13,10 @@ async function errorMessage(message) {
 }
 
 async function successMessage(data) {
-    return {
-        Error: false,
-        Message: 'Success',
-        Data: data,
-    };
+    return data;
+    // {
+    //     Error: false,
+    //     Message: 'Success',
+    //     Data: data,
+    // };
 }

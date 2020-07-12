@@ -7,6 +7,7 @@ import models from '../../models';
 import emailService from '../_helper/email/email.service';
 import dateService from '../_helper/date.service';
 import userService from '../user/user.service';
+import * as generator from 'generate-password';
 import { uid } from 'rand-token';
 
 var { User, UserLogin, sequelize } = models;
@@ -14,6 +15,8 @@ var { User, UserLogin, sequelize } = models;
 module.exports = {
     authorize,
     authenticate,
+    refreshToken,
+    generatePassword,
 };
 
 //In-memory object to store refresh tokens
@@ -98,4 +101,56 @@ async function authenticate({ emailaddress, password }) {
             checkPassword,
         };
     }
+}
+
+async function refreshToken(req, res, next) {
+    let refreshToken = req.body.refreshToken;
+    let token = req.body.token || req.query.token || req.headers['x-access-token'];
+    let userId = req.body.UserID;
+
+    if (refreshToken) {
+        if (refreshToken in refreshTokens) {
+            if (Date.now() >= refreshTokens[refreshToken][0]) {
+                Logger.info('AuthService::refreshToken::Expired refresh Token');
+                delete refreshTokens[refreshToken];
+                return null;
+            }
+
+            let decodedToken = await jwt.decode(token, config.secret);
+            var userIDFromToken = decodedToken.id;
+            var userIDFromMemory = refreshTokens[refreshToken][1];
+            if (userIDFromToken == userId && userIDFromMemory == userId) {
+                const user = await User.findOne({
+                    where: {
+                        UserID: userId,
+                    },
+                    attributes: ['UserID', 'Admin', 'Instructor'],
+                });
+
+                const payload = {
+                    admin: user.Admin,
+                    instructor: user.Instructor,
+                    id: user.UserID,
+                };
+                let token = await jwt.sign(payload, config.secret, {
+                    expiresIn: config.tokenLife,
+                });
+                Logger.info('AuthService::refreshToken::Refresh user token. UserID: ' + userId);
+                return token;
+            }
+        }
+    }
+
+    return null;
+}
+
+async function generatePassword() {
+    const password = await generator.generate({
+        length: 10,
+        numbers: true,
+        uppercase: true,
+        lowercase: true,
+    });
+
+    return password;
 }

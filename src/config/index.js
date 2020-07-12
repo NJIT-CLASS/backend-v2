@@ -10,6 +10,7 @@ if (!envFound) {
 
 module.exports = {
     port: process.env.PORT,
+    frontendPort: process.env.FRONTEND_PORT,
     databaseURL: process.env.DATABASE_URL,
     dbName: process.env.DB_NAME,
     dbUser: process.env.DB_USER,
