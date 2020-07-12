@@ -46,6 +46,7 @@ async function createSection(req, res, next) {
 
         if (newSection != null) {
             await t.commit();
+            Logger.info('SectionController::createSection::SectionID: ' + newSection.SectionID);
             return res.status(200).send(
                 await responseService.successMessage({
                     result: newSection,
