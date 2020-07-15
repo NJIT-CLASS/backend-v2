@@ -9,4 +9,8 @@ export default async (app) => {
     router.post('/course/createsection', sectionController.createSection);
     //update section
     router.post('/course/updatesection', sectionController.updateSection);
+    //find section by id
+    router.get('/section/:sectionid', sectionController.findOneSection);
+    //delete section by id
+    router.get('/section/delete/:sectionid', sectionController.deleteSection);
 };

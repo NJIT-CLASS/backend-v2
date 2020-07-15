@@ -24,6 +24,7 @@ module.exports = {
     updateEmail,
     updateName,
     updatePassword,
+    updateContact,
 };
 
 async function createUser2(req, res, next) {
@@ -394,5 +395,36 @@ async function updatePassword(req, res, next) {
     } catch (e) {
         Logger.error('UserController::updatePassword::' + e);
         return res.status(500).send(await responseService.errorMessage('UserController::updatePassword::' + e));
+    }
+}
+
+async function updateContact(req, res, next) {
+    try {
+        const data = req.body;
+        if (data.UserID == null) {
+            Logger.error('UserController::updateContact::Missing data in body');
+            return res.status(400).send(await responseService.errorMessage('UserController::updateContact::Missing data in body'));
+        }
+        const t = await sequelize.transaction();
+        const userContact = await userService.updateContact(data, t);
+        sequelize.options.omitNull = true;
+
+        if (userContact == null) {
+            Logger.error('UserController::updateContact::Cannot update user contact. UserID: ' + data.UserID);
+            return res
+                .status(400)
+                .send(await responseService.errorMessage('UserController::updateContact::Cannot update user contact. UserID: ' + data.UserID));
+        } else {
+            await t.commit();
+            Logger.info('UserController::updateContact::UserID: ' + data.UserID);
+            return res.status(200).json(
+                await responseService.successMessage({
+                    success: true,
+                })
+            );
+        }
+    } catch (e) {
+        Logger.error('UserController::updateContact::' + e);
+        return res.status(500).send(await responseService.errorMessage('UserController::updateContact::' + e));
     }
 }

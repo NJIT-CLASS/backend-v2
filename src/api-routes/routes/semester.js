@@ -11,4 +11,10 @@ export default async (app) => {
     router.get('/semester/:semesterid', semesterController.findOneSemester);
     //find all semesters
     router.get('/semester', semesterController.findAllSemesters);
+    //find semesters by organizationid
+    router.get('/getOrganizationSemesters/:organizationID', semesterController.findSemestersByOrganizationID);
+    //delete semester
+    router.get('/semester/delete/:semesterid', semesterController.deleteSemester);
+    //update semester
+    router.post('/semester/update/:semesterid', semesterController.updateSemester);
 };

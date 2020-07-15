@@ -8,6 +8,8 @@ module.exports = {
     createOrganization,
     findOneOrganization,
     findAllOrganizations,
+    deleteOrganization,
+    updateOrganization,
 };
 
 async function createOrganization(organizationObject, t) {
@@ -48,4 +50,41 @@ async function findAllOrganizations(attributes) {
         Logger.info('OrganizationService::findAllOrganizations::Count: ' + organization.length);
         return organization;
     }
+}
+
+async function deleteOrganization(attributes, t) {
+    const organization = await Organization.destroy(
+        {
+            where: attributes,
+        },
+        {
+            transaction: t,
+        }
+    );
+
+    if (organization == null) {
+        Logger.info('OrganizationService::deleteOrganizations::Cannot delete organization');
+        return null;
+    } else {
+        Logger.info('OrganizationService::deleteOrganizations::Deleted organization');
+        return organization;
+    }
+}
+
+async function updateOrganization(organizationObject, t) {
+    const { OrganizationID, ...organizationObjectWithoutID } = organizationObject;
+    const organization = await Organization.update(
+        organizationObjectWithoutID,
+        {
+            where: {
+                OrganizationID: OrganizationID,
+            },
+        },
+        {
+            transaction: t,
+        }
+    );
+
+    Logger.info('OrganizationService::updateOrganizations::Updated organization');
+    return organization;
 }

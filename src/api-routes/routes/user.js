@@ -26,4 +26,6 @@ export default async (app) => {
     router.put('/update/name', userController.updateName); //TODO: make generic user update call
 
     router.post('/update/password', userController.updatePassword); //TODO: make generic user update call
+
+    router.post('/userContact', userController.updateContact);
 };

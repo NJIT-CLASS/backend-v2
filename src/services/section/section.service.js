@@ -7,6 +7,7 @@ module.exports = {
     findOneSection,
     findAllSections,
     updateSection,
+    deleteSection,
 };
 
 async function createSection(sectionObject, t) {
@@ -66,4 +67,23 @@ async function updateSection(sectionObject, t) {
     );
     Logger.info('SectionService::updateSection::SectionID: ' + section.SectionID);
     return section;
+}
+
+async function deleteSection(attributes, t) {
+    const section = await Section.destroy(
+        {
+            where: attributes,
+        },
+        {
+            transaction: t,
+        }
+    );
+
+    if (section == null) {
+        Logger.info('sectionService::deleteSection::Cannot delete section');
+        return null;
+    } else {
+        Logger.info('sectionService::deleteSection::Deleted section');
+        return section;
+    }
 }
