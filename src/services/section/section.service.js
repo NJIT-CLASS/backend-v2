@@ -54,30 +54,21 @@ async function findAllSections(attributes) {
 
 async function updateSection(sectionObject, t) {
     const { SectionID, ...sectionObjectWithoutID } = sectionObject;
-    const section = await Section.update(
-        sectionObjectWithoutID,
-        {
-            where: {
-                SectionID: SectionID,
-            },
+    const section = await Section.update(sectionObjectWithoutID, {
+        where: {
+            SectionID: SectionID,
         },
-        {
-            transaction: t,
-        }
-    );
+        transaction: t,
+    });
     Logger.info('SectionService::updateSection::SectionID: ' + section.SectionID);
     return section;
 }
 
 async function deleteSection(attributes, t) {
-    const section = await Section.destroy(
-        {
-            where: attributes,
-        },
-        {
-            transaction: t,
-        }
-    );
+    const section = await Section.destroy({
+        where: attributes,
+        transaction: t,
+    });
 
     if (section == null) {
         Logger.info('sectionService::deleteSection::Cannot delete section');

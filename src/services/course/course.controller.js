@@ -10,6 +10,9 @@ module.exports = {
     createCourse,
     findCourseWithSection,
     updateCourse,
+    getCourseByOrganizationID,
+    deleteCourse,
+    findInstructorCourses,
 };
 
 async function createCourse(req, res, next) {
@@ -57,6 +60,35 @@ async function createCourse(req, res, next) {
     } catch (e) {
         Logger.error('CourseController::createCourse::' + e);
         return res.status(500).send(await responseService.errorMessage('CourseController::createCourse::' + e));
+    }
+}
+
+async function findInstructorCourses(req, res, next) {
+    try {
+        if (req.params.instructorID == null) {
+            Logger.error('CourseController::findInstructorCourses::Instructor ID missing');
+            return res.status(400).send(await responseService.errorMessage('CourseController::findInstructorCourses::Instructor ID missing'));
+        }
+
+        const courses = await courseService.findAllCourses({
+            CreatorID: req.params.instructorID,
+        });
+
+        if (courses == null) {
+            Logger.error('CourseController::findInstructorCourses::Cannot find courses');
+            return res.status(400).send(await responseService.errorMessage('CourseController::findInstructorCourses::Cannot find courses'));
+        } else {
+            Logger.info('CourseController::findInstructorCourses::Count: ' + courses.length);
+            res.status(200).json(
+                await responseService.successMessage({
+                    Error: false,
+                    Courses: courses,
+                })
+            );
+        }
+    } catch (e) {
+        Logger.error('CourseController::findInstructorCourses::' + e);
+        return res.status(500).send(await responseService.errorMessage('CourseController::findInstructorCourses::' + e));
     }
 }
 
@@ -149,5 +181,69 @@ async function updateCourse(req, res, next) {
     } catch (e) {
         Logger.error('CourseController::updateCourse::' + e);
         return res.status(500).send(await responseService.errorMessage('CourseController::updateCourse::' + e));
+    }
+}
+
+async function getCourseByOrganizationID(req, res, next) {
+    try {
+        if (req.params.organizationID == null) {
+            Logger.error('CourseController::getCourseByOrganizationID::OrganizationID is null');
+            return res.status(400).send(await responseService.errorMessage('CourseController::getCourseByOrganizationID::OrganizationID is null'));
+        }
+        const courses = await courseService.findAllCourses({
+            OrganizationID: req.params.organizationID,
+        });
+
+        if (courses == null) {
+            Logger.error('CourseController::getCourseByOrganizationID::Course not found');
+            return res.status(400).send(await responseService.errorMessage('CourseController::getCourseByOrganizationID::Course not found'));
+        } else {
+            Logger.info('CourseController::getCourseByOrganizationID::CourseID: ' + courses.CourseID);
+
+            return res.status(200).json(
+                await responseService.successMessage({
+                    Error: false,
+                    Courses: courses,
+                })
+            );
+        }
+    } catch (e) {
+        Logger.error('CourseController::getCourseByOrganizationID::' + e);
+        return res.status(500).send(await responseService.errorMessage('CourseController::getCourseByOrganizationID::' + e));
+    }
+}
+
+async function deleteCourse(req, res, next) {
+    try {
+        if (req.params.courseid == null) {
+            Logger.error('CourseController::deleteCourse::CourseID is null');
+            return res.status(400).send(await responseService.errorMessage('CourseController::deleteCourse::CourseID is null'));
+        }
+
+        const t = await sequelize.transaction();
+        const course = await courseService.deleteCourse(
+            {
+                CourseID: req.params.courseid,
+            },
+            t
+        );
+
+        if (course == null) {
+            Logger.error('CourseController::deleteCourse::Cannot delete course. CourseID: ' + req.params.courseid);
+            return res
+                .status(400)
+                .send(await responseService.errorMessage('CourseController::deleteCourse::Cannot delete course. CourseID: ' + req.params.courseid));
+        } else {
+            await t.commit();
+            Logger.info('CourseController::deleteCourse::CourseID: ' + req.params.courseid);
+            return res.status(200).send(
+                await responseService.successMessage({
+                    Error: false,
+                })
+            );
+        }
+    } catch (e) {
+        Logger.error('CourseController::deleteCourse::' + e);
+        return res.status(500).send(await responseService.errorMessage('CourseController::deleteCourse::' + e));
     }
 }

@@ -13,4 +13,6 @@ export default async (app) => {
     router.get('/section/:sectionid', sectionController.findOneSection);
     //delete section by id
     router.get('/section/delete/:sectionid', sectionController.deleteSection);
+    //get sections of a course
+    router.get('/getCourseSections/:courseID', sectionController.findCourseSections);
 };

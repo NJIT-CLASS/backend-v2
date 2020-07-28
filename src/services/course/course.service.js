@@ -9,6 +9,7 @@ module.exports = {
     findOneCourse,
     findAllCourses,
     updateCourse,
+    deleteCourse,
 };
 
 async function createCourse(courseObject, t) {
@@ -51,17 +52,21 @@ async function findAllCourses(attributes) {
 
 async function updateCourse(courseObject, t) {
     const { CourseID, ...courseObjectWithoutID } = courseObject;
-    const course = await Course.update(
-        courseObjectWithoutID,
-        {
-            where: {
-                CourseID: CourseID,
-            },
+    const course = await Course.update(courseObjectWithoutID, {
+        where: {
+            CourseID: CourseID,
         },
-        {
-            transaction: t,
-        }
-    );
+        transaction: t,
+    });
     Logger.info('CourseService::updateCourse::CourseID:' + course.CourseID);
+    return course;
+}
+
+async function deleteCourse(courseObject, t) {
+    const course = await Course.destroy({
+        where: courseObject,
+        transaction: t,
+    });
+    Logger.info('CourseService::deleteCourse::Course Deleted');
     return course;
 }

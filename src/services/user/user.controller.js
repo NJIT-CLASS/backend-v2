@@ -95,7 +95,7 @@ async function createUser(req, res, next) {
         if (user != null && (login != null) & (contact != null)) {
             await t.commit();
             Logger.info('UserController::createUser::New user created. UserId: ' + user.UserID);
-            return res.status(201).send(user);
+            return res.status(201).send(await responseService.successMessage(user));
         } else {
             Logger.error('UserController::createUser::Cannot create user.');
             return res.status(400).send(await responseService.errorMessage('UserController::createUser::Cannot create user.'));
@@ -127,7 +127,7 @@ async function createFakeUser(req, res, next) {
         if (user != null && (login != null) & (contact != null)) {
             await t.commit();
             Logger.info('UserController::createFakeUser::New user created. UserId: ' + user.UserID);
-            return res.status(201).send(user);
+            return res.status(201).send(await responseService.successMessage(user));
         } else {
             Logger.error('UserController::createFakeUser::Cannot create user.');
             return res.status(400).send(await responseService.errorMessage('UserController::createUser::Cannot create user.'));

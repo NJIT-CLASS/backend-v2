@@ -7,6 +7,8 @@ import notification from './routes/notification';
 import semester from './routes/semester';
 import section from './routes/section';
 import organization from './routes/organization';
+import sectionUser from './routes/section-user';
+import assignment from './routes/assignment';
 
 export default () => {
     const app = Router();
@@ -15,7 +17,9 @@ export default () => {
     course(app);
     organization(app);
     notification(app);
+    assignment(app);
     section(app);
+    sectionUser(app);
     semester(app);
     user(app);
 

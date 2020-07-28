@@ -3,6 +3,7 @@ import config from '../../config';
 import Logger from '../../loaders/logger';
 import models from '../../models';
 import emailService from '../_helper/email/email.service';
+import { Console } from 'winston/lib/winston/transports';
 var { User, UserLogin, UserContact, sequelize } = models;
 
 module.exports = {
@@ -53,9 +54,13 @@ async function findOneUser(attributes) {
     const user = await User.findOne({
         where: attributes,
     });
-
-    Logger.info('UserService::findOneUser::UserID:' + user.UserID);
-    return user;
+    if (user == null) {
+        Logger.info('UserService::findOneUser::Cannot find user');
+        return user;
+    } else {
+        Logger.info('UserService::findOneUser::UserID:' + user.UserID);
+        return user;
+    }
 }
 
 async function findAllUsers() {
@@ -77,8 +82,13 @@ async function findOneUserContact(attributes) {
     const contact = await UserContact.findOne({
         where: attributes,
     });
-    Logger.info('UserService::findOneContact::UserID:' + contact.UserID);
-    return contact;
+    if (contact == null) {
+        Logger.info('UserService::findOneContact::Cannot find user contact');
+        return contact;
+    } else {
+        Logger.info('UserService::findOneContact::UserID:' + contact.UserID);
+        return contact;
+    }
 }
 
 async function findAllUserContacts(attributes) {
@@ -93,8 +103,13 @@ async function findOneUserLogin(attributes) {
     const userLogin = await UserLogin.findOne({
         where: attributes,
     });
-    Logger.info('UserService::findOneUserLogin::UserID:' + userLogin.UserID);
-    return userLogin;
+    if (userLogin == null) {
+        Logger.info('UserService::findOneUserLogin::Cannot find user login');
+        return userLogin;
+    } else {
+        Logger.info('UserService::findOneUserLogin::UserID:' + userLogin.UserID);
+        return userLogin;
+    }
 }
 
 async function findAllUserLogins(attributes) {
@@ -107,17 +122,12 @@ async function findAllUserLogins(attributes) {
 
 async function updateUser(userObject, t) {
     const { UserID, ...userObjectWithoutID } = userObject;
-    const user = await User.update(
-        userObjectWithoutID,
-        {
-            where: {
-                UserID,
-            },
+    const user = await User.update(userObjectWithoutID, {
+        where: {
+            UserID,
         },
-        {
-            transaction: t,
-        }
-    );
+        transaction: t,
+    });
     Logger.info('UserService::updateUser::UserID:', user.UserID);
     return user;
 }
@@ -136,8 +146,6 @@ async function updatePassword(loginObject, t) {
             where: {
                 UserID: loginObject.UserID,
             },
-        },
-        {
             transaction: t,
         }
     );
@@ -147,34 +155,24 @@ async function updatePassword(loginObject, t) {
 
 async function updateLogin(loginObject, t) {
     const { UserID, ...loginObjectWithoutID } = loginObject;
-    const login = await UserLogin.update(
-        loginObjectWithoutID,
-        {
-            where: {
-                UserID: UserID,
-            },
+    const login = await UserLogin.update(loginObjectWithoutID, {
+        where: {
+            UserID: UserID,
         },
-        {
-            transaction: t,
-        }
-    );
+        transaction: t,
+    });
     Logger.info('UserService::updateLogin::UserID:' + login.UserID);
     return login;
 }
 
 async function updateContact(contactObject, t) {
     const { UserID, ...contactObjectWithoutID } = contactObject;
-    const contact = await UserContact.update(
-        contactObjectWithoutID,
-        {
-            where: {
-                UserID: UserID,
-            },
+    const contact = await UserContact.update(contactObjectWithoutID, {
+        where: {
+            UserID: UserID,
         },
-        {
-            transaction: t,
-        }
-    );
+        transaction: t,
+    });
     Logger.info('UserService::updateContact::UserID:' + contact.UserID);
     return contact;
 }

@@ -53,28 +53,21 @@ async function findAllSemesters(attributes) {
 
 async function updateSemester(semesterObject, t) {
     const { SemesterID, ...semesterObjectWithoutID } = semesterObject;
-    const semester = await Semester.update(
-        semesterObjectWithoutID,
-        {
-            where: {
-                SemesterID: SemesterID,
-            },
+    const semester = await Semester.update(semesterObjectWithoutID, {
+        where: {
+            SemesterID: SemesterID,
         },
-        {
-            transaction: t,
-        }
-    );
+        transaction: t,
+    });
     Logger.info('SemesterService::updateSemester::SemesterID: ' + semester.SemesterID);
     return semester;
 }
 
 async function deleteSemester(attributes, t) {
-    const semester = await Semester.destroy(
-        {
-            where: attributes,
-        },
-        { transaction: t }
-    );
+    const semester = await Semester.destroy({
+        where: attributes,
+        transaction: t,
+    });
     if (semester == null) {
         Logger.info('SemesterService::delete::Cannot delete semester');
         return null;

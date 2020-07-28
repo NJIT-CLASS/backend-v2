@@ -53,14 +53,10 @@ async function findAllOrganizations(attributes) {
 }
 
 async function deleteOrganization(attributes, t) {
-    const organization = await Organization.destroy(
-        {
-            where: attributes,
-        },
-        {
-            transaction: t,
-        }
-    );
+    const organization = await Organization.destroy({
+        where: attributes,
+        transaction: t,
+    });
 
     if (organization == null) {
         Logger.info('OrganizationService::deleteOrganizations::Cannot delete organization');
@@ -73,17 +69,12 @@ async function deleteOrganization(attributes, t) {
 
 async function updateOrganization(organizationObject, t) {
     const { OrganizationID, ...organizationObjectWithoutID } = organizationObject;
-    const organization = await Organization.update(
-        organizationObjectWithoutID,
-        {
-            where: {
-                OrganizationID: OrganizationID,
-            },
+    const organization = await Organization.update(organizationObjectWithoutID, {
+        where: {
+            OrganizationID: OrganizationID,
         },
-        {
-            transaction: t,
-        }
-    );
+        transaction: t,
+    });
 
     Logger.info('OrganizationService::updateOrganizations::Updated organization');
     return organization;

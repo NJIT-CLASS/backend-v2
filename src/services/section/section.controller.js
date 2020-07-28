@@ -11,6 +11,7 @@ module.exports = {
     updateSection,
     findOneSection,
     deleteSection,
+    findCourseSections,
 };
 
 async function createSection(req, res, next) {
@@ -170,5 +171,43 @@ async function deleteSection(req, res, next) {
     } catch (e) {
         Logger.error('SectionController::deleteSection::' + e);
         return res.status(500).send(await responseService.errorMessage('SectionController::deleteSection::' + e));
+    }
+}
+
+async function findCourseSections(req, res, next) {
+    try {
+        if (req.params.courseID == null) {
+            Logger.error('SectionController::findCourseSections::Missing course id');
+            return res.status(400).send(await responseService.errorMessage('SectionController::findCourseSections::Missing course id'));
+        }
+
+        let options = {
+            CourseID: req.params.courseID,
+        };
+
+        if (req.query.semesterID != null) {
+            options.SemesterID = req.query.semesterID;
+        }
+
+        const sections = await sectionService.findAllSections(options);
+
+        if (sections == null) {
+            Logger.error('SectionController::finsCourseSections::Cannot find sections. CourseID: ' + req.params.courseID);
+            return res
+                .status(400)
+                .send(await responseService.errorMessage('SectionController::finsCourseSections::Cannot find sections. CourseID: ' + req.params.courseID));
+        } else {
+            Logger.info('SectionController::finsCourseSections::Count: ' + sections.length);
+            res.status(200).json(
+                await responseService.successMessage({
+                    Error: false,
+                    Message: 'Success',
+                    Sections: sections,
+                })
+            );
+        }
+    } catch (e) {
+        Logger.error('SectionController::findCourseSections::' + e);
+        return res.status(500).send(await responseService.errorMessage('SectionController::findCourseSections::' + e));
     }
 }
