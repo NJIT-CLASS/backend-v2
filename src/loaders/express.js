@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import morgan from 'morgan';
+import multer from 'multer';
 
 import config from '../config';
 import routes from '../api-routes';
@@ -19,6 +20,7 @@ const expressLoader = async ({ app }) => {
     app.use(morgan('dev'));
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());
+
     //load API routes
     app.use(config.api.prefix, routes());
 

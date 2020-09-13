@@ -25,7 +25,7 @@ fs.readdirSync(__dirname + '/archived/')
         return file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.js';
     })
     .forEach((file) => {
-        var model = sequelize['import'](path.join(__dirname + '/archived/', file));
+        var model = require(path.join(__dirname + '/archived/', file))(sequelize, Sequelize.DataTypes);
         db[model.name] = model;
     });
 
@@ -34,7 +34,8 @@ fs.readdirSync(__dirname + '/common/')
         return file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.js';
     })
     .forEach((file) => {
-        var model = sequelize['import'](path.join(__dirname + '/common/', file));
+        var model = require(path.join(__dirname + '/common/', file))(sequelize, Sequelize.DataTypes);
+
         db[model.name] = model;
     });
 
@@ -43,7 +44,7 @@ fs.readdirSync(__dirname + '/removed/')
         return file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.js';
     })
     .forEach((file) => {
-        var model = sequelize['import'](path.join(__dirname + '/removed/', file));
+        var model = require(path.join(__dirname + '/removed/', file))(sequelize, Sequelize.DataTypes);
         db[model.name] = model;
     });
 

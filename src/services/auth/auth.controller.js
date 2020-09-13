@@ -94,8 +94,12 @@ async function authenticate(req, res, next) {
                     Timeout: minutes,
                 });
             }
-            return res.status(200).json(
+
+            Logger.info('AuthController::authenticate::UserID: ' + userLogin.UserID);
+            return res.status(201).json(
                 await responseService.successMessage({
+                    Error: false,
+                    Message: 'Success',
                     UserID: userLogin.UserID,
                     Pending: userLogin.Pending,
                     Token: data.token,

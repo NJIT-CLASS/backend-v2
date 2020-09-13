@@ -389,8 +389,10 @@ async function updatePassword(req, res, next) {
                 return res.status(400).send(await responseService.errorMessage('UserController::updatePassword::User Object is null!'));
             }
         } else {
-            Logger.error('UserController::updatePassword::Cannot find UserID: ' + req.body.UserID);
-            return res.status(400).send(await responseService.errorMessage('UserController::updatePassword::Cannot find UserID: ' + req.body.UserID));
+            Logger.error('UserController::updatePassword::Failed to update password. UserID: ' + req.body.UserID);
+            return res
+                .status(400)
+                .send(await responseService.errorMessage('UserController::updatePassword::Failed to update password. UserID: ' + req.body.UserID));
         }
     } catch (e) {
         Logger.error('UserController::updatePassword::' + e);

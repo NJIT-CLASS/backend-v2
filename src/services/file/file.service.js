@@ -3,53 +3,78 @@ import Logger from '../../loaders/logger';
 var { FileReference, sequelize } = models;
 
 module.exports = {
-    addFileRef,
-    addFileRefs,
+    createFileReference,
+    findOneFileReference,
+    findAllFileReferences,
+    updateFileReference,
+    deleteFileReference,
 };
 
-/*
-     Add uploaded files' references
-     */
-async function addFileRefs(file_infos, user_id) {
-    Logger.info('add file references', {
-        user_id: user_id,
-        file_infos: file_infos,
+async function createFileReference(fileReferenceObject, t) {
+    const fileReference = await FileReference.create(fileReferenceObject, {
+        transaction: t,
     });
-    var me = this;
-    return Promise.all(
-        file_infos.map(function (file_info) {
-            return me.addFileRef(user_id, file_info);
-        })
-    ).then(function (file_refs) {
-        logger.log('info', 'file references added', {
-            file_refs: file_refs.map(function (it) {
-                return it.toJSON();
-            }),
-        });
-        return file_refs;
-    });
+
+    if (fileReference == null) {
+        Logger.info('FileReferenceService::createFileReference::File reference not found');
+        return null;
+    } else {
+        Logger.info('FileReferenceService::createFileReference::FileID: ' + fileReference.FileID);
+        return fileReference;
+    }
 }
 
-/*
-    Add a new file reference
-     */
-async function addFileRef(user_id, file_info) {
-    Logger.info('add file', {
-        user_id: user_id,
-        file_info: file_info,
+async function findOneFileReference(attributes) {
+    const fileReference = await FileReference.findOne({
+        where: attributes,
     });
 
-    return FileReference.create({
-        UserID: user_id,
-        Info: file_info,
-        LastUpdated: new Date(),
-    })
-        .then(function (file_ref) {
-            logger.log('debug', 'file reference added', file_ref.toJSON());
-            return file_ref;
-        })
-        .catch(function (err) {
-            logger.log('error', 'add file reference failed', err);
-            return err;
-        });
+    if (fileReference == null) {
+        Logger.info('FileReferenceService::findOneFileReference::File reference not found');
+        return null;
+    } else {
+        Logger.info('FileReferenceService::findOneFileReference::FileID: ' + fileReference.FileID);
+        return fileReference;
+    }
+}
+
+async function findAllFileReferences(attributes) {
+    const fileReference = await FileReference.findAll({
+        where: attributes,
+    });
+
+    if (fileReference == null) {
+        Logger.info('FileReferenceService::findAllFileReferences::File reference not found');
+        return null;
+    } else {
+        Logger.info('FileReferenceService::findAllFileReferences::Count: ' + fileReference.length);
+        return fileReference;
+    }
+}
+
+async function updateFileReference(fileReferenceObject, t) {
+    const { FileID, ...fileReferenceObjectWithoutID } = fileReferenceObject;
+    const fileReference = await FileReference.update(fileReferenceObjectWithoutID, {
+        where: {
+            FileID: FileID,
+        },
+        transaction: t,
+    });
+    Logger.info('FileReferenceService::updateFileReference::FileID: ' + fileReference.FileID);
+    return fileReference;
+}
+
+async function deleteFileReference(attributes, t) {
+    const fileReference = await FileReference.destroy({
+        where: attributes,
+        transaction: t,
+    });
+
+    if (fileReference == null) {
+        Logger.info('FileReferenceService::deleteFileReference::Cannot delete file reference');
+        return null;
+    } else {
+        Logger.info('FileReferenceService::deleteFileReference::Deleted file reference');
+        return fileReference;
+    }
 }

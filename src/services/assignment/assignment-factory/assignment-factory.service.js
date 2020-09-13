@@ -94,13 +94,9 @@ async function createAssignmentSkeleton(assignmentObject, t) {
 
             TA_array.push(taskActivity.TaskActivityID);
         });
-        console.log(workflowActivity);
         await updateWorkflowGradeDistribution(assignmentObject, TA_array, workflowActivity, index, t);
-        console.log('here3');
         await updateIDs(TA_array, t);
-        console.log('here4');
         await replaceTreeID(workflowActivity.WorkflowActivityID, TA_array, workflowActivity.WorkflowStructure, t);
-        console.log('here5');
     });
     console.log('here');
     await updateAssignmentGradeDistribution(assignmentObject, WA_array, assignmentActivity, index, t);
@@ -130,22 +126,23 @@ async function updateWorkflowGradeDistribution(assignment, TA_array, workflowAct
 async function replaceTreeID(wa_id, ta_array, tree, t) {
     var replacedTree = tree;
     var count = 0;
+    if (replacedTree != null || replacedTree.length > 0) {
+        await Promise.map(replacedTree, function (node, index) {
+            if (node.id != -1 && node.hasOwnProperty('parent')) {
+                replacedTree[index]['id'] = ta_array[count];
+                replacedTree[index]['parent'] = ta_array[replacedTree[index].parent];
+                count++;
+            } else if (node.id != -1) {
+                replacedTree[index]['id'] = ta_array[count];
+                count++;
+            }
+        });
 
-    await Promise.map(replacedTree, function (node, index) {
-        if (node.id != -1 && node.hasOwnProperty('parent')) {
-            replacedTree[index]['id'] = ta_array[count];
-            replacedTree[index]['parent'] = ta_array[replacedTree[index].parent];
-            count++;
-        } else if (node.id != -1) {
-            replacedTree[index]['id'] = ta_array[count];
-            count++;
-        }
-    });
-
-    const workflowActivity = await workflowActivityService.updateWorkflowActivity({
-        WorkflowStructure: replacedTree,
-        WorkflowActivityID: wa_id,
-    });
+        const workflowActivity = await workflowActivityService.updateWorkflowActivity({
+            WorkflowStructure: replacedTree,
+            WorkflowActivityID: wa_id,
+        });
+    }
 }
 
 async function updateIDs(ta_array, t) {
@@ -158,8 +155,8 @@ async function updateIDs(ta_array, t) {
             TaskActivityID: task,
         });
 
-        var assigneeConstraints = JSON.parse(taskActivity.AssigneeConstraints);
-        var refersToWhichTask = JSON.parse(taskActivity.RefersToWhichTask);
+        var assigneeConstraints = await JSON.parse(taskActivity.AssigneeConstraints);
+        var refersToWhichTask = await JSON.parse(taskActivity.RefersToWhichTask);
 
         //Loop through Assignee Constraints
         for (var item in assigneeConstraints[2]) {

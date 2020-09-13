@@ -149,7 +149,7 @@ async function updatePassword(loginObject, t) {
             transaction: t,
         }
     );
-    Logger.info('UserService::updatePassword::UserID:' + login.UserID);
+    Logger.info('UserService::updatePassword::UserID:' + loginObject.UserID);
     return login;
 }
 
@@ -161,7 +161,7 @@ async function updateLogin(loginObject, t) {
         },
         transaction: t,
     });
-    Logger.info('UserService::updateLogin::UserID:' + login.UserID);
+    Logger.info('UserService::updateLogin::UserID:' + UserID);
     return login;
 }
 
@@ -173,6 +173,6 @@ async function updateContact(contactObject, t) {
         },
         transaction: t,
     });
-    Logger.info('UserService::updateContact::UserID:' + contact.UserID);
+    Logger.info('UserService::updateContact::UserID:' + UserID);
     return contact;
 }

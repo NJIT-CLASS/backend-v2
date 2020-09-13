@@ -41,7 +41,7 @@ async function createAssignmentSkeleton(req, res, next) {
             );
         }
 
-        const assignment = await assignmentFactoryService.createAssignmentSkeleton(req.body.assignment, t);
+        const assignment = await assignmentFactoryService.createAssignmentSkeleton(req.body.assignment);
         await t.commit();
 
         res.status(200).json(

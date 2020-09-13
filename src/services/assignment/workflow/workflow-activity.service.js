@@ -52,6 +52,6 @@ async function updateWorkflowActivity(workflowActivityObject, t) {
     const { WorkflowActivityID, ...workflowActivityObjectWithoutID } = workflowActivityObject;
     const workflow = await WorkflowActivity.update(workflowActivityObjectWithoutID, { where: { WorkflowActivityID: WorkflowActivityID }, transaction: t });
 
-    Logger.info('WorkflowService::updateWorkflowActivity::WorkflowActivityID: ' + workflow.WorkflowActivityID);
+    Logger.info('WorkflowService::updateWorkflowActivity::WorkflowActivityID: ' + workflow);
     return workflow;
 }

@@ -9,12 +9,14 @@ import section from './routes/section';
 import organization from './routes/organization';
 import sectionUser from './routes/section-user';
 import assignment from './routes/assignment';
+import files from './routes/files';
 
 export default () => {
     const app = Router();
     apiStatistics(app);
     auth(app);
     course(app);
+    files(app);
     organization(app);
     notification(app);
     assignment(app);
