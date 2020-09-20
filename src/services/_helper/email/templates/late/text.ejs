@@ -1,0 +1,18 @@
+Deadline: <%= due_date> (passed)
+Assignment: <%= assignment_display_name>
+<%=task_display_name} (late task)
+Course: (<%=number>-<%=section_number>) <%=course_name>
+
+Hello,
+Completing tasks late holds up your peers who need your input for their work. Please finish this late task in the Participatory Learning system. Login using the following link. 
+System login: https://pla.njit.edu:<%=port>\nLogin ID: <%=email>
+
+To contact the instructor: 
+            <% for (var i = 0; i < instructors.length; i++) { %>
+                <%=instructor[i].name>:  <%=instructor[i].email>
+            <% } %>
+
+For technical support for the Participatory Learning system, contact: bieber@njit.edu
+
+Thanks,
+The Participatory Learning Team

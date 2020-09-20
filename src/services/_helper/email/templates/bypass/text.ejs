@@ -1,0 +1,17 @@
+Assignment: <%= assignment_display_name>
+<%=task_display_name} (bypassed task)
+Course: (<%=number>-<%=section_number>) <%=course_name>
+
+Hello,
+This task is being skipped over in the Participatory Learning system, so you can no longer complete it.
+System login: https://pla.njit.edu:<%=port>\nLogin ID: <%=email>
+
+To contact the instructor: 
+            <% for (var i = 0; i < instructors.length; i++) { %>
+                <%=instructor[i].name>:  <%=instructor[i].email>
+            <% } %>
+
+For technical support for the Participatory Learning system, contact: bieber@njit.edu
+
+Thanks,
+The Participatory Learning Team

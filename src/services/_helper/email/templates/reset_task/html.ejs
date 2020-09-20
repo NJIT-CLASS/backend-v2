@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="x-apple-disable-message-reformatting">
+    <link rel="stylesheet" href="style.css" data-inline>
+</head>
+
+<body>
+    <div>
+        <div>Deadline: <%= due_date></div>
+        <div>Assignment: <%= assignment_display_name></div>
+        <div><%=task_display_name} (restarted task)</div>
+        <div>Course: (<%=number>-<%=section_number>) <%=course_name></div>
+        <div>
+            <p>Hello,</p>
+            <p>This task has been restarted in the Participatory Learning system. Thank you for completing your tasks on time! Please login using the following link. </p>
+            <p>System login: https://pla.njit.edu:<%=port</p>
+            <p>>Login ID: <%=email></p>
+        </div>
+        <div>
+            <p>To contact the instructor: </p>
+            <% for (var i = 0; i < instructors.length; i++) { %>
+                <%=instructor[i].name>:  <%=instructor[i].email>
+            <% } %>
+        </div>
+        <div>
+            <p>For technical support for the Participatory Learning system, contact:
+            <a mailto:bieber@njit.edu>bieber@njit.edu</a></p>
+            <p>Thanks,</p>
+            <p>The Participatory Learning Team</p>
+        </div>
+        
+    </div>
+</body>
+
+</html>

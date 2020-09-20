@@ -1,0 +1,18 @@
+Deadline: <%= due_date>
+Assignment: <%= assignment_display_name>
+<%=task_display_name} (new task <%if (data.extra_credit) {%>for Extra Credit<%}%> )
+Course: (<%=number>-<%=section_number>) <%=course_name>
+
+Hello,
+You have a new <%if (data.extra_credit) {%>extra credit<%}%> task in the Participatory Learning system. (It may have a shorter deadline than usual due to a holdup from a previous task, so we appreciate that you complete it on time.) Please login using the following link.
+System login: https://pla.njit.edu:<%=port>\nLogin ID: <%=email>
+
+To contact the instructor: 
+            <% for (var i = 0; i < instructors.length; i++) { %>
+                <%=instructor[i].name>:  <%=instructor[i].email>
+            <% } %>
+
+For technical support for the Participatory Learning system, contact: bieber@njit.edu
+
+Thanks,
+The Participatory Learning Team

@@ -1,0 +1,23 @@
+Deadline: <%= due_date>
+Assignment: <%= assignment_display_name>
+<%=task_display_name} (restarted task)
+Course: (<%=number>-<%=section_number>) <%=course_name>
+
+Hello,
+
+This task has been restarted in the Participatory Learning system. Thank you for completing your tasks on time! Please login using the following link. 
+
+System login: https://pla.njit.edu:<%= port %>
+
+Login ID: <%=email>
+
+To contact the instructor: 
+            <% for (var i = 0; i < instructors.length; i++) { %>
+                <%=instructor[i].name>:  <%=instructor[i].email>
+            <% } %>
+
+For technical support for the Participatory Learning system, contact: bieber@njit.edu
+
+Thanks,
+    
+The Participatory Learning Team

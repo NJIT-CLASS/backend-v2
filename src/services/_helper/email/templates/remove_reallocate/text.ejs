@@ -1,0 +1,16 @@
+Assignment: <%= assignment_display_name>
+<%=task_display_name} (removed from task)
+Course: (<%=number>-<%=section_number>) <%=course_name>
+
+Hello,
+You have been removed from a task in the Participatory Learning system, and a new user has been assigned in your place.
+
+To contact the instructor: 
+            <% for (var i = 0; i < instructors.length; i++) { %>
+                <%=instructor[i].name>:  <%=instructor[i].email>
+            <% } %>
+
+For technical support for the Participatory Learning system, contact: bieber@njit.edu
+
+Thanks,
+The Participatory Learning Team
