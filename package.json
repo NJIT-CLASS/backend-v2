@@ -39,7 +39,7 @@
     "regenerator-runtime": "^0.13.7",
     "rimraf": "^3.0.2",
     "sequelize": "^6.3.4",
-    "underscore": "^1.10.2",
+    "underscore": "^1.12.1",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.0"
   },
